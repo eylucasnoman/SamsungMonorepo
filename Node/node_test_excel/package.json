@@ -1,0 +1,22 @@
+{
+  "name": "test_ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "dev:test": "tsx src/test.ts",
+    "dev:watch": "tsx watch src/index.ts",
+    "build": "tsup src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.16.2",
+    "node-xlsx": "^0.21.2",
+    "tsup": "^6.7.0",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4"
+  }
+}
