@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import nodeXLSX from 'node-xlsx';
+import { writeLog } from './utils/util';
 
 export function CheckForCorruptSheet(basePath: string) {
   const listOfFolders = fs.readdirSync(basePath);
@@ -14,12 +15,16 @@ export function CheckForCorruptSheet(basePath: string) {
       const fileName = path.basename(pathToFile);
 
       try {
-        if (pathToFile.toLowerCase().includes('list')) {
+        const currentFileName = fileName.toLocaleLowerCase();
+        if (
+          currentFileName.includes('out') ||
+          currentFileName.includes('list')
+        ) {
           nodeXLSX.parse(pathToFile);
-          console.log('Funcionando:', fileName);
+          writeLog('NotCorruptedFiles.log', `${folder} - ${fileName}`);
         }
       } catch (error) {
-        console.log('Corrompida ou não é arquivo:', fileName);
+        writeLog('CorruptedFiles.log', `${folder} - ${fileName}`);
       }
     }
   }
