@@ -1,6 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import nodeXLSX from 'node-xlsx';
+import { writeLog } from '../utils/util';
+import yaml from 'js-yaml';
 
 // TODO - alterar para função recursiva que adiciona ao Map todos os .xlsx dentro de todas as pastas
 export function getMapOfExcelPath(basePath: string): Map<string, string[]> {
@@ -101,10 +103,15 @@ export function changeSalesDocNameAndBuildXlsx(
   const newFilePath = path.join(pathToBeWritten, newFileName);
   try {
     fs.writeFileSync(newFilePath, Buffer.from(newSheet));
-    console.log(`Arquivo "${newFileName}" criado em: ${newFolderName}.`);
+    writeLog(
+      'NewlyCreatedFiles.log',
+      `Arquivo "${newFileName}" criado em: ${newFolderName}.`
+    );
   } catch (error) {
-    console.log(`Falha ao escrever o arquivo "${newFileName}."`);
-    console.log(error);
+    writeLog(
+      'ErrorFileCreation.log',
+      `Arquivo "${newFileName}" - Erro: ${error}.`
+    );
   }
 }
 
@@ -114,20 +121,50 @@ export function moveFile(filePath: string, newDir: string) {
 
   fs.rename(filePath, dest, (err) => {
     if (err) console.warn(err);
-    else console.log(`${fileName} movido.`);
   });
 }
 
-/*
-- Pegar todos os arquivos XLSX e nomes de pastas diretas ✅
-- Checar pastas sem nada ✅
-  - Excluir ✅
-- Checar arquivos XLSX sem conteúdo ✅
-  - Excluir ✅
-- Alterar: Sales Document -> Sales document ✅
-  - OBS.: para alterar, eu tenho que gerar um novo arquivo ✅
-    - Garantir que a extensão desse arquivo seja a mesma do original ✅
-- Mover XLSX com nome SOLIST para outro diretório com o mesmo nome de pasta ✅
-*/
+export function editCellValue(
+  filePath: string,
+  dictionaryFile: fs.PathOrFileDescriptor
+) {
+  const fileContents = fs.readFileSync(dictionaryFile, 'utf-8');
 
-// NOTE - fazer um loop para testar com mais de um arquivo antes de rodar na pasta CE
+  const toFromFile = yaml.load(fileContents) as object;
+  const excelTitles = new Map<string, [string]>(Object.entries(toFromFile));
+
+  const [{ name, data }] = nodeXLSX.parse(filePath);
+
+  for (const cellName of data[0]) {
+    for (const [newTitle, originalTitle] of excelTitles) {
+      if (originalTitle.includes(cellName) && newTitle !== cellName) {
+        const cellIndex = data[0].findIndex((cell) => cell === cellName);
+        data[0][cellIndex] = newTitle;
+      }
+    }
+  }
+
+  return [{ name, data }];
+}
+
+export function buildSheet(
+  pathToSaveFile: string,
+  data: { name: string; data: any[][] }[]
+) {
+  const newSheet = nodeXLSX.build(data);
+  const fileName = path.basename(pathToSaveFile);
+  const dirName = path.dirname(pathToSaveFile);
+
+  try {
+    fs.writeFileSync(pathToSaveFile, Buffer.from(newSheet));
+    writeLog(
+      'NewlyCreatedFiles.log',
+      `Arquivo "${fileName}" criado em: ${dirName}.`
+    );
+  } catch (error) {
+    writeLog(
+      'ErrorFileCreation.log',
+      `Arquivo "${fileName}" - Erro: ${error}.`
+    );
+  }
+}
