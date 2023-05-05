@@ -1,10 +1,11 @@
-import { CheckAndMoveSheets } from './CheckAndMoveSheets';
+import { CheckForCorruptSheet } from './RoutineCheckCorruptFiles';
 
-const basePathFrom = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\Teste\CE`;
-const basePathTo = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas E-NERP\BASE SOLIST\CE`;
-const basePathToOut = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\OUTBOUND`;
-// const basePathFrom = String.raw`C:\Users\GB675AG\OneDrive - EY\Desktop\bkp_tst\CE_from`;
-// const basePathTo = String.raw`C:\Users\GB675AG\OneDrive - EY\Desktop\bkp_tst\CE_to`;
-// const basePathToOut = String.raw`C:\Users\GB675AG\OneDrive - EY\Desktop\bkp_tst\bck`;
+const basePathFromCE = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\Teste\CE`;
+const basePathToCE = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas E-NERP\BASE SOLIST\CE`;
+const basePathToOutCE = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\OUTBOUND\CE`;
 
-CheckAndMoveSheets(basePathFrom, basePathTo, basePathToOut);
+const basePathFromMX = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\Teste\MX`;
+const basePathToMX = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas E-NERP\BASE SOLIST\MX`;
+const basePathToOutMX = String.raw`C:\Users\GB675AG\EY\Projeto Samsung Order Mgmt - General\03. Gestão da Rotina\Automações\Ferramentas\BCK\OUTBOUND\MX`;
+
+CheckForCorruptSheet(basePathFromMX);
