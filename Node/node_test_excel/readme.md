@@ -1,0 +1,11 @@
+- Pegar todos os arquivos XLSX e nomes de pastas diretas ✅
+- Checar por arquivos corrompidos ✅
+  - Deletar os arquivos corrompidos e atualizar o map de arquivos ✅
+- Checar pastas sem nada ✅
+  - Excluir ✅
+- Checar arquivos XLSX sem conteúdo ✅
+  - Excluir ✅
+- Alterar: Sales Document -> Sales document ✅
+  - OBS.: para alterar, eu tenho que gerar um novo arquivo ✅
+    - Garantir que a extensão desse arquivo seja a mesma do original ✅
+- Mover XLSX com nome SOLIST para outro diretório com o mesmo nome de pasta ✅
