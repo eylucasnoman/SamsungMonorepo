@@ -5,13 +5,21 @@ import { writeLog } from '../utils/util';
 import yaml from 'js-yaml';
 
 // TODO - alterar para função recursiva que adiciona ao Map todos os .xlsx dentro de todas as pastas
+/*
+  Retorna um map com nome da pasta e lista de planilhas. Ex.: {11.01.2022: [outbound.xlsx, solist ce.xlsx]}
+  basePath: é a string do caminho inteiro até a pasta
+ */
 export function getMapOfExcelPath(basePath: string): Map<string, string[]> {
+  // "fs.readdirSync" lista todos os arquivos e pastas dentro do diretório
   const listOfFoldersInsidePath = fs.readdirSync(basePath);
   const listOfExcelPath: string[] = [];
   const mapOfExcelByDirectory = new Map<string, string[]>();
 
+  // Itera sobre as pastas encontradas
   for (const folderName of listOfFoldersInsidePath) {
     if (path.extname(folderName.toLowerCase()).includes('xls')) {
+      // Se o conteúdo for um arquivo com extensão "xls", eu pego o nome da pasta
+      // e pego os nomes de todos os arquivos dentro da pasta e adiciono no Map da linha 26
       listOfExcelPath.push(folderName);
       const currentPath = path.join(basePath, folderName);
       const folderNameOfFile = getDirectParentDirectoryName(currentPath);
@@ -19,9 +27,10 @@ export function getMapOfExcelPath(basePath: string): Map<string, string[]> {
     }
   }
 
+  // Caso o conteúdo seja uma pasta, eu pego os nomes de todos os arquivos dentro dela
+  // e também adiciono junto com o nome da pastas, no Map na linha 36
   for (const folderName of listOfFoldersInsidePath) {
     const currentFolder = path.join(basePath, folderName);
-
     try {
       const listOfFilesInsideFolder = fs.readdirSync(currentFolder);
       mapOfExcelByDirectory.set(folderName, listOfFilesInsideFolder);
@@ -32,14 +41,17 @@ export function getMapOfExcelPath(basePath: string): Map<string, string[]> {
 
   return mapOfExcelByDirectory;
 }
-// const mapResult = getMapOfExcelPath(pathFrom);
 
+// filePath: é o caminho completo até o arquivo. Esse retorna o nome da pasta
+// direta que contém o arquivo
 export function getDirectParentDirectoryName(filePath: string): string {
   const directoryTillFile = path.dirname(filePath);
   const fileParentFolderName = path.basename(directoryTillFile);
   return fileParentFolderName;
 }
 
+// folderPath: caminho completo até a pasta
+// Essa função verifica se a pasta está vazia e a deleta
 export function deleteEmptyDirectories(folderPath: string) {
   if (fs.readdirSync(folderPath).length !== 0) {
     console.log('O diretório não está vazio!');
@@ -55,6 +67,7 @@ export function deleteEmptyDirectories(folderPath: string) {
   }
 }
 
+// Retorna "true" se o arquivo tiver vazio
 export function isSheetEmpty(filePath: string): Boolean {
   const [{ name, data }] = nodeXLSX.parse(filePath, { sheetRows: 3 });
 
@@ -64,12 +77,17 @@ export function isSheetEmpty(filePath: string): Boolean {
   return isEmpty;
 }
 
+// Deleta qualquer arquivo
 export function deleteFile(filePath: string) {
   fs.rm(filePath, (err) => {
     if (err !== null) console.log(err);
   });
 }
 
+// Verifica se já existe uma pasta com o nome definido, se não, cria a pasta.
+// Aqui deve-se passar o caminho completo, incluindo o nome da nova pasta
+// ex.: C:/Users/Desktop/Teste
+// "Teste" é a pasta que não existe e será criada agora.
 export function createDirectoryIfNotExists(newFolderPath: string) {
   try {
     if (!fs.existsSync(newFolderPath)) fs.mkdirSync(newFolderPath);
@@ -78,6 +96,7 @@ export function createDirectoryIfNotExists(newFolderPath: string) {
   }
 }
 
+// Função antiga que muda o "Sales Document" para "Sales document"
 export function changeSalesDocNameAndBuildXlsx(
   originalFilePath: string,
   newBasePath: string,
@@ -115,6 +134,8 @@ export function changeSalesDocNameAndBuildXlsx(
   }
 }
 
+// Move o arquivo para a pasta desejada
+// 1 parâmetro é o caminho até o arquivo e o 2 é o novo caminho
 export function moveFile(filePath: string, newDir: string) {
   const fileName = path.basename(filePath);
   const dest = path.resolve(newDir, fileName);
@@ -124,6 +145,7 @@ export function moveFile(filePath: string, newDir: string) {
   });
 }
 
+// Edita os títulos de dada planilha de acordo com o dicionário YAML passado
 export function editCellValue(
   filePath: string,
   dictionaryFile: fs.PathOrFileDescriptor
@@ -147,6 +169,8 @@ export function editCellValue(
   return [{ name, data }];
 }
 
+// Recria a planilha no diretório passado. Os dados da planilha tem que vir
+// exatamente como o "nodeXLSX.parse()" retorna
 export function buildSheet(
   pathToSaveFile: string,
   data: { name: string; data: any[][] }[]
