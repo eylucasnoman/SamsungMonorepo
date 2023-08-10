@@ -1,0 +1,41 @@
+DEV SIT BAIXO:
+    Transaction: ZRLEJ56150
+    Variant: DEV_MES_SIT
+    Layout: 
+        - /SALES_CE
+        - Devolução SIT
+
+DEV SIT CIMA:
+    Transaction: ZLLEJ50090
+    Variant: ODAIR.JR
+    Layout: 
+        - /DEV_MES
+        - DEV_MES_SALES
+
+DEV WEEK:
+    Transaction: ZLLEJ50090
+    Variant: ODAIR.JR
+    Layout: 
+        - /SALES_CE
+        - Devolução Real
+
+ESTOQUE:
+    Transaction: ZRMMJ310410
+    Variant: CE_DA_HME
+    Layout: 
+        - /SALES_CE
+        - Estoque SCM
+
+OUTBOUND:
+    Transaction: ZLLEJ50090
+    Variant: CE_DA_HME
+    Layout: 
+        - /SCM CE
+        - Outbound Sales CE
+
+SO LIST:
+    Transaction: ZRSDD6A080
+    Variant: CE_DA_HME
+    Layout: 
+        - /SALES_CE_SO
+        - SO LIST CE SALES
